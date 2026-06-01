@@ -107,20 +107,18 @@
 				<?php
 					$phone = $row[0];
 					$id = $row[4];
-					$sql1 = "SELECT * from booked_hist";
+					$sql1 = "SELECT * from booked_hist WHERE phone='$phone' AND idproof='$id'";
 					if ($result=mysqli_query($conn,$sql1))
 				  	{
-				  		while ($row=mysqli_fetch_row($result))
+				  		while ($history=mysqli_fetch_row($result))
 				    	{
-				    		if($row[0]==$phone && $row[2]==$id)
-				    		{
 				    		?>
-				    		<td><?php echo $row[14]; ?></td>
-				   			<td><?php echo $row[1]; ?></td>
-				   			<td><?php echo $row[3]; ?></td>
-				   			<td><?php echo $row[4]; ?></td>
-				    		<td><?php echo $row[5]; ?></td>
-				    		<td><?php echo $row[13]; } ?></td>
+				    		<td><?php echo $history[14]; ?></td>
+				   			<td><?php echo $history[1]; ?></td>
+				   			<td><?php echo $history[3]; ?></td>
+				   			<td><?php echo $history[4]; ?></td>
+				    		<td><?php echo $history[5]; ?></td>
+				    		<td><?php echo $history[13]; ?></td>
 				</tr><?php
 				    	}
 				    	mysqli_free_result($result); 
