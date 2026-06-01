@@ -67,6 +67,25 @@
 	  	color: white;
 	  	text-decoration: underline;
 	}
+	.flash-message {
+		background: #d4edda;
+		color: #155724;
+		padding: 12px;
+		border-radius: 6px;
+		margin-bottom: 12px;
+		position: relative;
+		transition: opacity 0.3s ease;
+	}
+	.flash-message .close-btn {
+		position: absolute;
+		top: 8px;
+		right: 10px;
+		background: transparent;
+		border: none;
+		color: #155724;
+		font-size: 18px;
+		cursor: pointer;
+	}
 </style>
 <body>
 	<?php
@@ -77,11 +96,12 @@
 		}
 		$sql = "SELECT * from temp_session";
 		$result=mysqli_query($conn, $sql);
-		$row=mysqli_fetch_row($result); ?>
+		$user_row=mysqli_fetch_row($result);
+		$user_phone = isset($user_row[0]) ? $user_row[0] : ''; ?>
 	<table style="width: 100%;">
 		<tr>
 			<td id="td1" style="padding: 10px; font-size: 48px;">THE <p style="color: #e6b800; display: inline;">DELUXE</p> HOTEL</td>
-			<td id="td1" style="font-size: 25px; text-align: right;">Hello, <?php echo $row[2]; ?></td>
+			<td id="td1" style="font-size: 25px; text-align: right;">Hello, <?php echo htmlspecialchars($user_row[2]); ?></td>
 		</tr>
 	</table>
 	<ul>
@@ -93,6 +113,10 @@
 		<li><a href="index.php">Logout</a></li>
 	</ul>
 	<div style="margin-left:25%;padding:1px 16px;height:1000px;">
+		<?php if (isset($_GET['status']) && $_GET['status'] === 'success') {
+			$paid_bid = isset($_GET['book_id']) ? htmlspecialchars($_GET['book_id']) : '';
+			echo '<div id="flashMessage" class="flash-message">Payment successful'.($paid_bid? ' for booking '.$paid_bid:'').'.<button type="button" class="close-btn" onclick="document.getElementById(\'flashMessage\').style.display=\'none\';">&times;</button></div>';
+		} ?>
 		<p style="margin-left: 10%; margin-top: 5%; font-size: 28px;"></p>
 			<div class="basic_box"><table>
 				<tr>
@@ -113,22 +137,23 @@
 					{
 						die("Connection failed: ".$conn->connect_error);
 					}
-					$sql1 = "SELECT * from confirmed_booking";
+					$user_phone_esc = $conn->real_escape_string($user_phone);
+					$sql1 = "SELECT * from confirmed_booking WHERE phone='$user_phone_esc'";
 					if ($result=mysqli_query($conn,$sql1))
-				  	{
-				  		while ($row=mysqli_fetch_row($result))
-				    	{
-				    		?>
-				    		<td><?php echo $row[14]; ?></td>
-				   			<td><?php echo $row[1]; ?></td>
-				   			<td><?php echo $row[3]; ?></td>
-				   			<td><?php echo $row[4]; ?></td>
-				    		<td><?php echo $row[5]; ?></td>
-				    		<td><?php echo $row[13]; ?></td>
+					{
+						while ($row=mysqli_fetch_row($result))
+						{
+						?>
+						<td><?php echo $row[14]; ?></td>
+						<td><?php echo $row[1]; ?></td>
+						<td><?php echo $row[3]; ?></td>
+						<td><?php echo $row[4]; ?></td>
+						<td><?php echo $row[5]; ?></td>
+						<td><?php echo $row[13]; ?></td>
 				</tr><?php
-				    	}
-				    	mysqli_free_result($result); 
-				    }?>
+						}
+						mysqli_free_result($result); 
+					}?>
 				</table><br><br>
 				<table>
 				<tr>
@@ -142,5 +167,16 @@
 				
 		</table><br></div>
 	</div>
+	<script>
+		window.addEventListener('load', function() {
+			var flash = document.getElementById('flashMessage');
+			if (flash) {
+				setTimeout(function() {
+					flash.style.opacity = '0';
+					setTimeout(function() { flash.style.display = 'none'; }, 300);
+				}, 5000);
+			}
+		});
+	</script>
 </body>
 </html>
