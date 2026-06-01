@@ -22,6 +22,19 @@
 		padding: 50px;
 		box-shadow: 0 10px 20px rgba(0,0,0,0.19);
 	}
+	.status-pill {
+		display: inline-block;
+		padding: 5px 10px;
+		border-radius: 12px;
+		color: white;
+		font-weight: bold;
+	}
+	.status-paid {
+		background-color: #28a745;
+	}
+	.status-unpaid {
+		background-color: #dc3545;
+	}
 	#td1
 	{
 		background-color: rgba(09,41,98,0.9);
@@ -87,7 +100,7 @@
 		<p style="margin-left: 10%; margin-top: 5%; font-size: 28px;"></p>
 			<table class="basic_box">
 				<tr>
-					<td colspan="6"><p style="font-size: 28px; text-align: center; text-decoration: underline;"><b>Booking History</b></p>
+					<td colspan="7"><p style="font-size: 28px; text-align: center; text-decoration: underline;"><b>Booking History</b></p>
 				</td>
 				<tr>
 					<th>Booking ID</th>
@@ -96,6 +109,7 @@
 					<th>Check-in Date</th>
 					<th>Check-out Date</th>
 					<th>Price</th>
+				<th>Payment Status</th>
 				</tr>
 				<tr>
 				<?php
@@ -107,8 +121,8 @@
 					$sql1 = "SELECT * from booked_hist";
 					if ($result=mysqli_query($conn,$sql1))
 				  	{
-				  		while ($row=mysqli_fetch_row($result))
-				    	{
+				  		while ($row=mysqli_fetch_row($result)) {
+					    		$paid = true;
 				    		?>
 				    		<td><?php echo $row[14]; ?></td>
 				   			<td><?php echo $row[1]; ?></td>
@@ -116,6 +130,7 @@
 				   			<td><?php echo $row[4]; ?></td>
 				    		<td><?php echo $row[5]; ?></td>
 				    		<td><?php echo $row[13]; ?></td>
+					<td><span class="status-pill <?php echo $paid ? 'status-paid' : 'status-unpaid'; ?>"><?php echo $paid ? 'Paid' : 'Not Paid'; ?></span></td>
 				</tr><?php
 				    	}
 				    	mysqli_free_result($result); 
