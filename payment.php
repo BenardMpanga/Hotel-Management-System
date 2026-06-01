@@ -7,12 +7,16 @@
 			die("Connection failed: ".$conn->connect_error);
 		}
 		$bid = $_POST["book_id"];
+		// get current user phone from temp_session to ensure users can only pay their own bookings
+		$usr = mysqli_query($conn, "SELECT * FROM temp_session");
+		$urow = mysqli_fetch_row($usr);
+		$user_phone = isset($urow[0]) ? $urow[0] : '';
 		$sql = "SELECT * from confirmed_booking";
 		$result=mysqli_query($conn,$sql);
 		while ($row=mysqli_fetch_row($result))
-	   	{
-			if($bid==$row[14])
-			{	
+	   {
+			if($bid==$row[14] && $row[0] == $user_phone)
+			{
 				$sql1 = "SELECT * FROM balance";
 				$result1 = mysqli_query($conn,$sql1);
 				$r = mysqli_fetch_row($result1);
@@ -27,7 +31,7 @@
 				mysqli_query($conn, $sql2);
 				$sql2 = "UPDATE rooms_count SET available_rooms = available_rooms+1, occupied_rooms = occupied_rooms-1 WHERE room_type='$row[3]'";
 				mysqli_query($conn, $sql2);
-				header("Location: payment1.php");
+				header("Location: user_payment.php?status=success&book_id=".urlencode($bid));
 			}
 		}
 	?>
