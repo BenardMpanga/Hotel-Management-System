@@ -80,6 +80,7 @@
 		<li><a href="admin_room_status.php">Booking Requests</a></li>
 		<li><a href="confirmed_bookings.php">Confirmed Bookings</a></li>
 		<li><a href="booking_history.php">Booking History</a></li>
+		<li><a href="admin_payments.php">Payments</a></li>
 		<li><a href="index.php">Logout</a></li>
 	</ul>
 	<div style="margin-left:25%;padding:1px 16px;height:1000px;">
