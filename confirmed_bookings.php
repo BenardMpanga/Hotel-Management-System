@@ -34,6 +34,19 @@
 		font-weight: bold;
 		padding-left: 15px;
 	}
+	.status-pill {
+		display: inline-block;
+		padding: 5px 10px;
+		border-radius: 12px;
+		color: white;
+		font-weight: bold;
+	}
+	.status-paid {
+		background-color: #28a745;
+	}
+	.status-unpaid {
+		background-color: #dc3545;
+	}
 	ul {
 	  	list-style-type: none;
 	  	margin: 0;
@@ -80,13 +93,14 @@
 		<li><a href="admin_room_status.php">Booking Requests</a></li>
 		<li><a href="confirmed_bookings.php">Confirmed Bookings</a></li>
 		<li><a href="booking_history.php">Booking History</a></li>
+		<li><a href="admin_payments.php">Payments</a></li>
 		<li><a href="index.php">Logout</a></li>
 	</ul>
 	<div style="margin-left:25%;padding:1px 16px;height:1000px;">
 		<p style="margin-left: 10%; margin-top: 5%; font-size: 28px;"></p>
 			<table class="basic_box">
 				<tr>
-					<td colspan="6"><p style="font-size: 28px; text-align: center; text-decoration: underline;"><b>Confirmed Bookings</b></p>
+					<td colspan="7"><p style="font-size: 28px; text-align: center; text-decoration: underline;"><b>Confirmed Bookings</b></p>
 				</td>
 				<tr>
 					<th>Booking ID</th>
@@ -95,6 +109,7 @@
 					<th>Check-in Date</th>
 					<th>Check-out Date</th>
 					<th>Price</th>
+					<th>Payment Status</th>
 				</tr>
 				<tr>
 				<?php
@@ -108,6 +123,10 @@
 				  	{
 				  		while ($row=mysqli_fetch_row($result))
 				    	{
+				    		$bid = $row[14];
+				    		$paid_check_sql = "SELECT 1 FROM booked_hist WHERE book_id='$bid' LIMIT 1";
+				    		$paid_check = mysqli_query($conn, $paid_check_sql);
+				    		$paid = ($paid_check && mysqli_num_rows($paid_check) > 0);
 				    		?>
 				    		<td><?php echo $row[14]; ?></td>
 				   			<td><?php echo $row[1]; ?></td>
@@ -115,6 +134,7 @@
 				   			<td><?php echo $row[4]; ?></td>
 				    		<td><?php echo $row[5]; ?></td>
 				    		<td><?php echo $row[13]; ?></td>
+				    		<td><span class="status-pill <?php echo $paid ? 'status-paid' : 'status-unpaid'; ?>"><?php echo $paid ? 'Paid' : 'Not Paid'; ?></span></td>
 				</tr><?php
 				    	}
 				    	mysqli_free_result($result); 
